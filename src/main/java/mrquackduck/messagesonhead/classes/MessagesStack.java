@@ -25,14 +25,17 @@ public class MessagesStack {
         Entity currentEntity = player;
         while (!currentEntity.getPassengers().isEmpty()) {
             var passengers = currentEntity.getPassengers();
+            var needToBreak = true;
             for (Entity passenger : passengers) {
                 var passengerType = passenger.getType();
                 if (passengerType == EntityType.AREA_EFFECT_CLOUD || passengerType == EntityType.TEXT_DISPLAY) {
                     currentEntity = passenger;
                     entities.add(passenger);
+                    needToBreak = false;
                 }
-                else break;
             }
+
+            if (needToBreak) break;
         }
 
         this.player = player;
@@ -198,6 +201,7 @@ public class MessagesStack {
         for (int i = 0; i < count; i++) {
             var entity = Objects.requireNonNull(location.getWorld()).spawn(location, AreaEffectCloud.class);
             entity.setParticle(Particle.BLOCK_CRACK, Material.AIR.createBlockData());
+            entity.setRadius(0);
             entity.setInvulnerable(true);
             entity.setGravity(false);
             // Adding metadata in order to distinguish from regular entities and be able to make cleanup
