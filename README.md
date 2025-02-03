@@ -6,7 +6,7 @@
   <a href="https://github.com/vshymanskyy/StandWithUkraine"><img src="https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg"></a>
 </p>
 
-**MessagesOnHead** is a **Paper (1.19.4+)** plugin that shows messages above player's head for a little time.\
+**MessagesOnHead** is a **Paper (1.19.4+)** plugin that shows messages above players' heads for a little time when they send messages to the chat.\
 The plugin's functionality is based on the [Text Display](https://minecraft.wiki/w/Display#Text_Displays) entity.
 
 ### 👀 Screenshots
@@ -16,7 +16,7 @@ The plugin's functionality is based on the [Text Display](https://minecraft.wiki
 ### 🌠 Key features
 - **Limit per line**: you can configure the symbols limit for each line in the `symbolsPerLine` field.
 - **Max symbols limit**: you can configure the max amount of symbols per message in the `symbolsLimit` field (_'...' will be appended if the limit is reached_).
-- **Timer**: You can enable/disable the display of the timer at the end of the message showing how much time is left until the message is gone.
+- **Timer**: You can enable/disable the timer at the end of the message that shows how much time is left until the message is gone.
 - **Time scaling**: you can make longer messages exist for more time.
 - **Colors and style**: you can choose the color of the text, its background, whether the text is shadowed and the color for the timer.
 
