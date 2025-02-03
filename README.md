@@ -6,7 +6,7 @@
   <a href="https://github.com/vshymanskyy/StandWithUkraine"><img src="https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg"></a>
 </p>
 
-**MessagesOnHead** is a **Paper (1.19.4+)** plugin that shows messages above player's head for a little time.\
+**MessagesOnHead** is a **Paper (1.19.4+)** plugin that shows messages above players' heads for a little time when they send messages to the chat.\
 The plugin's functionality is based on the [Text Display](https://minecraft.wiki/w/Display#Text_Displays) entity.
 
 ### 👀 Screenshots
