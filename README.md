@@ -16,7 +16,7 @@ The plugin's functionality is based on the [Text Display](https://minecraft.wiki
 ### 🌠 Key features
 - **Limit per line**: you can configure the symbols limit for each line in the `symbolsPerLine` field.
 - **Max symbols limit**: you can configure the max amount of symbols per message in the `symbolsLimit` field (_'...' will be appended if the limit is reached_).
-- **Timer**: You can enable/disable the display of the timer at the end of the message showing how much time is left until the message is gone.
+- **Timer**: You can enable/disable the timer at the end of the message that shows how much time is left until the message is gone.
 - **Time scaling**: you can make longer messages exist for more time.
 - **Colors and style**: you can choose the color of the text, its background, whether the text is shadowed and the color for the timer.
 
