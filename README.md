@@ -53,6 +53,8 @@ lowerMode: true
 textColor: "#FFFFFF"
 
 timerEnabled: true
+# Minimum message length threshold for the timer to be displayed
+minSymbolsForTimer: 0
 timerFormat: " (%.1f)"
 timerColor: "#F4CA16"
 
