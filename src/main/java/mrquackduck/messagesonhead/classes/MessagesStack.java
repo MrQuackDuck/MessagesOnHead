@@ -13,11 +13,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
+// Represents a stack of entities on top of player's head (text display entities and the middle entities)
 public class MessagesStack {
     private final Plugin plugin;
     private final Player player;
     private final List<Entity> entities = new ArrayList<>();
     private final static HashMap<UUID, MessagesStack> playersStacks = new HashMap<>();
+    private final List<MessageGroup> messageGroups = new ArrayList<>();
 
     private final static String customEntityMetaTag = "MessagesOnHead";
 
@@ -100,44 +102,52 @@ public class MessagesStack {
             currentEntityToSitOn = textDisplay;
         }
 
+        MessageGroup newGroup = new MessageGroup(newEntities, lines.size());
+        messageGroups.add(newGroup);
         entities.addAll(newEntities);
 
-        // Delay removal by 2 ticks to ensure timer reaches 0.0
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (int i = 0; i < lines.size(); i++) {
-                    removeOldestMessage();
-                }
+                removeMessageGroup(newGroup);
             }
         }.runTaskLater(plugin, Math.round(secondsToExist * 20) + 2);
     }
 
-    public void removeOldestMessage() {
-        var entitiesToRemove = new ArrayList<Entity>();
+    private void removeMessageGroup(MessageGroup group) {
+        if (!messageGroups.contains(group)) return;
+        var currentGroupIndex = messageGroups.indexOf(group);
 
-        int index;
-        for (index = 0; index < entities.size(); index++) {
-            Entity entity = entities.get(index);
-            entitiesToRemove.add(entity);
-            if (entity.getType() == EntityType.TEXT_DISPLAY) break;
-        }
-
-        for (Entity entity : entitiesToRemove) {
+        // Remove all entities in the group
+        for (Entity entity : group.entities) {
             entity.remove();
             entities.remove(entity);
         }
 
-        Entity entityToTransfer;
+        messageGroups.remove(group);
 
-        try { entityToTransfer = entities.get(0); }
-        catch (IndexOutOfBoundsException ex) { return; }
+        // Return if there's no entities left
+        if (entities.isEmpty()) return;
 
-        var lowerMode = plugin.getConfig().getBoolean("lowerMode");
-        var middleEntities = spawnMiddleEntities(lowerMode ? 1 : 2);
-        entities.addAll(0, middleEntities);
+        // The current group index turns into the next group index because the current group was deleted from the list
+        var nextGroupIndex = currentGroupIndex;
+        if (nextGroupIndex >= messageGroups.size()) return; // Return if no further groups left
+        var nextGroup = messageGroups.get(nextGroupIndex);
+
+        // Determining the message group standing before in the list
+        var prevGroupIndex = nextGroupIndex - 1;
+        if (prevGroupIndex >= 0) {
+            // If there's a potential group, transfer the message there
+            var prevGroup = messageGroups.get(prevGroupIndex);
+            prevGroup.entities.get(prevGroup.entities.size() - 1).addPassenger(nextGroup.entities.get(0));
+            return;
+        }
+
+        var middleEntities = spawnMiddleEntities(plugin.getConfig().getBoolean("lowerMode") ? 1 : 2);
+        middleEntities.get(middleEntities.size() - 1).addPassenger(nextGroup.entities.get(0));
+        nextGroup.entities.addAll(0, middleEntities);
+
         player.addPassenger(middleEntities.get(0));
-        middleEntities.get(middleEntities.size() - 1).addPassenger(entityToTransfer);
     }
 
     private TextDisplay spawnTextDisplay(Location location, String text, double secondsToExist, boolean showTimer) {
@@ -150,7 +160,7 @@ public class MessagesStack {
         var timerColor = config.getString("timerColor");
         if (showTimer && !timerEnabled) showTimer = false;
         var isShadowed = config.getBoolean("isShadowed");
-        location.setY(255); // Setting a high initial Y for the message to appear from top
+        location.setY(255); // Setting high Y coordinate to prevent the message appearing from bottom
 
         assert textColor != null;
         assert timerColor != null;
@@ -159,7 +169,10 @@ public class MessagesStack {
         textDisplay.setBillboard(Display.Billboard.VERTICAL);
         textDisplay.setRotation(location.getYaw(), 0);
         textDisplay.setDefaultBackground(!backgroundEnabled);
-        if (backgroundEnabled) textDisplay.setBackgroundColor(Color.fromARGB(ColorUtils.hexToARGB(backgroundColor, backgroundTransparencyPercentage)));
+        if (backgroundEnabled) {
+            assert backgroundColor != null;
+            textDisplay.setBackgroundColor(Color.fromARGB(ColorUtils.hexToARGB(backgroundColor, backgroundTransparencyPercentage)));
+        }
         textDisplay.setShadowed(isShadowed);
         textDisplay.setLineWidth(Integer.MAX_VALUE);
         textDisplay.setMetadata(customEntityMetaTag, new FixedMetadataValue(plugin, ((TextComponent)player.displayName()).content()));
@@ -195,7 +208,7 @@ public class MessagesStack {
     private List<Entity> spawnMiddleEntities(int count) {
         var middleEntities = new ArrayList<Entity>();
         var location = player.getLocation();
-        location.setY(255); // Setting a high initial Y for the message to appear from top
+        location.setY(255); // Setting high Y coordinate to prevent the message appearing from bottom
 
         Entity previousEntity = null;
         for (int i = 0; i < count; i++) {
