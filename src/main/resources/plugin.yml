@@ -1,0 +1,16 @@
+name: MessagesOnHead
+version: '${project.version}'
+main: mrquackduck.messagesonhead.MessagesOnHeadPlugin
+api-version: '1.19'
+
+commands:
+  messagesonhead:
+    description: The MessagesOnHead command
+    permission: messagesonhead.admin
+    aliases:
+      - moh
+
+permissions:
+  messagesonhead.admin:
+    description: Allows to use staff commands of the plugin
+    default: op

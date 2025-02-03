@@ -1,0 +1,36 @@
+symbolsPerLine: 30
+# If the limit is reached, the three dots will be added at the end. -1 means there's no limit
+symbolsLimit: -1
+# Initial amount of seconds for the message to exist
+timeToExist: 2
+
+# Whether a longer message will exist for more time
+scalingEnabled: true
+# Scaling coefficient per symbol in seconds. For example, a message with 50 symbols
+# will exist for extra 5 seconds if the coefficient is set to 0.1 (because 0.1 * 50 = 5)
+scalingCoefficient: 0.05
+
+# Whether messages should be displayed on the same level as the nickname (for servers with nicknames disabled)
+lowerMode: true
+
+textColor: "#FFFFFF"
+
+timerEnabled: true
+timerFormat: " (%.1f)"
+timerColor: "#F4CA16"
+
+backgroundEnabled: true
+backgroundColor: "#000000"
+backgroundTransparencyPercentage: 100 # Range: [0, 100]
+
+isShadowed: true
+
+messages:
+  "prefix": "&#F4CA16[MessagesOnHead]"
+  "info-content": "<prefix> &#D9E6EDCommands list:
+  \n &f/moh reload - &#D9E6EDReloads the config and makes a cleanup by removing all entities related to the plugin.
+  \n &f/moh say - &#D9E6EDSay a message on behalf of the player."
+  "reloaded": "<prefix> &#D9E6EDReloaded!"
+  "player-not-found": "<prefix> Player not found."
+  "command-not-found": "<prefix> &cCommand not found."
+  "error-during-reload": "<prefix> &cAn error occurred during reload! Check console for details."
