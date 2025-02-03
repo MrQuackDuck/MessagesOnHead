@@ -76,6 +76,7 @@ public class MessagesStack {
 
     public void addMessage(String text) {
         var secondsToExist = calculateTimeForMessageToExist(text);
+        var minSymbolsForTimer = plugin.getConfig().getInt("minSymbolsForTimer");
 
         List<String> lines = StringUtils.splitTextIntoLines(text, plugin.getConfig().getInt("symbolsPerLine"), plugin.getConfig().getInt("symbolsLimit"));
         Collections.reverse(lines); // Reverse to stack from bottom to top
@@ -86,13 +87,14 @@ public class MessagesStack {
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
             boolean isLastLine = (i == 0); // Since lines are reversed, first index is actually the last line
+            boolean needToShowTimer = isLastLine && text.length() >= minSymbolsForTimer;
 
             int middleEntitiesToSpawn = 1;
             if (currentEntityToSitOn.getType() == EntityType.PLAYER) middleEntitiesToSpawn = 2;
             if (currentEntityToSitOn.getType() == EntityType.PLAYER && !plugin.getConfig().getBoolean("lowerMode")) middleEntitiesToSpawn = 3;
 
             final var middleEntities = spawnMiddleEntities(middleEntitiesToSpawn);
-            final var textDisplay = spawnTextDisplay(player.getLocation(), line, secondsToExist, isLastLine);
+            final var textDisplay = spawnTextDisplay(player.getLocation(), line, secondsToExist, needToShowTimer);
             middleEntities.get(middleEntities.size() - 1).addPassenger(textDisplay);
             currentEntityToSitOn.addPassenger(middleEntities.get(0));
 
