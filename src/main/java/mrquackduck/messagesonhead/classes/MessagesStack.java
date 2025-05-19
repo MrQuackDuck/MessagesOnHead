@@ -1,6 +1,7 @@
 package mrquackduck.messagesonhead.classes;
 
 import mrquackduck.messagesonhead.utils.ColorUtils;
+import mrquackduck.messagesonhead.utils.EntityUtils;
 import mrquackduck.messagesonhead.utils.StringUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -21,7 +22,7 @@ public class MessagesStack {
     private final static HashMap<UUID, MessagesStack> playersStacks = new HashMap<>();
     private final List<MessageGroup> messageGroups = new ArrayList<>();
 
-    private final static String customEntityMetaTag = "MessagesOnHead";
+    private final static String customEntityTag = "moh-entity";
 
     private MessagesStack(Player player, Plugin plugin) {
         Entity currentEntity = player;
@@ -67,7 +68,7 @@ public class MessagesStack {
         playersStacks.clear();
         for (World world : plugin.getServer().getWorlds()) {
             for (Entity entity : world.getEntities()) {
-                if (entity.hasMetadata(customEntityMetaTag)) {
+                if (EntityUtils.hasScoreboardTagCaseInvariant(entity, customEntityTag)) {
                     entity.remove();
                 }
             }
@@ -177,7 +178,8 @@ public class MessagesStack {
         }
         textDisplay.setShadowed(isShadowed);
         textDisplay.setLineWidth(Integer.MAX_VALUE);
-        textDisplay.setMetadata(customEntityMetaTag, new FixedMetadataValue(plugin, ((TextComponent)player.displayName()).content()));
+        textDisplay.setMetadata(customEntityTag, new FixedMetadataValue(plugin, ((TextComponent)player.displayName()).content()));
+        textDisplay.addScoreboardTag(customEntityTag);
 
         if (showTimer) {
             new BukkitRunnable() {
@@ -219,8 +221,9 @@ public class MessagesStack {
             entity.setRadius(0);
             entity.setInvulnerable(true);
             entity.setGravity(false);
-            // Adding metadata in order to distinguish from regular entities and be able to make cleanup
-            entity.setMetadata(customEntityMetaTag, new FixedMetadataValue(plugin, ((TextComponent)player.displayName()).content()));
+            entity.setMetadata(customEntityTag, new FixedMetadataValue(plugin, ((TextComponent)player.displayName()).content()));
+            // Adding a scoreboard tag in order to distinguish from regular entity and be able to make the cleanup
+            entity.addScoreboardTag(customEntityTag);
             middleEntities.add(entity);
             if (previousEntity != null) previousEntity.addPassenger(entity);
             previousEntity = entity;
