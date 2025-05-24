@@ -26,7 +26,7 @@ The plugin's functionality is based on the [Text Display](https://minecraft.wiki
 
 ### 💻 Commands
 
-- `/moh info` - shows commands info.
+- `/moh info` — shows commands info.
 - `/moh reload` — reloads the config and makes a cleanup by removing all entities related to the plugin.
 - `/moh say <player> <msg>` — says a message on behalf of the player.
 
