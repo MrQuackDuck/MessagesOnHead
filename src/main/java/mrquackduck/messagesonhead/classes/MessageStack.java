@@ -14,17 +14,25 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
-// Represents a stack of entities on top of player's head (text display entities and the middle entities)
-public class MessagesStack {
+/**
+ * Represents a stack of displayed messages on top of player's head
+ */
+public class MessageStack {
     private final Plugin plugin;
     private final Player player;
     private final List<Entity> entities = new ArrayList<>();
-    private final static HashMap<UUID, MessagesStack> playersStacks = new HashMap<>();
-    private final List<MessageGroup> messageGroups = new ArrayList<>();
+    private final List<DisplayedMessage> displayedMessages = new ArrayList<>();
+    private final static HashMap<UUID, MessageStack> playersStacks = new HashMap<>();
 
     private final static String customEntityTag = "moh-entity";
 
-    private MessagesStack(Player player, Plugin plugin) {
+    private MessageStack(Player player, Plugin plugin) {
+        this.player = player;
+        this.plugin = plugin;
+        findExistingStackEntities();
+    }
+
+    private void findExistingStackEntities() {
         Entity currentEntity = player;
         while (!currentEntity.getPassengers().isEmpty()) {
             var passengers = currentEntity.getPassengers();
@@ -40,16 +48,13 @@ public class MessagesStack {
 
             if (needToBreak) break;
         }
-
-        this.player = player;
-        this.plugin = plugin;
     }
 
-    public static MessagesStack getMessagesStack(Player player, Plugin plugin) {
+    public static MessageStack getMessagesStack(Player player, Plugin plugin) {
         var stack = playersStacks.get(player.getUniqueId());
         if (stack != null) return stack;
 
-        stack = new MessagesStack(player, plugin);
+        stack = new MessageStack(player, plugin);
         playersStacks.put(player.getUniqueId(), stack);
         return stack;
     }
@@ -75,7 +80,7 @@ public class MessagesStack {
         }
     }
 
-    public void addMessage(String text) {
+    public void pushMessage(String text) {
         var secondsToExist = calculateTimeForMessageToExist(text);
         var minSymbolsForTimer = plugin.getConfig().getInt("minSymbolsForTimer");
 
@@ -105,50 +110,50 @@ public class MessagesStack {
             currentEntityToSitOn = textDisplay;
         }
 
-        MessageGroup newGroup = new MessageGroup(newEntities, lines.size());
-        messageGroups.add(newGroup);
+        DisplayedMessage newDisplayedMessage = new DisplayedMessage(newEntities);
+        displayedMessages.add(newDisplayedMessage);
         entities.addAll(newEntities);
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                removeMessageGroup(newGroup);
+                removeDisplayedMessage(newDisplayedMessage);
             }
         }.runTaskLater(plugin, Math.round(secondsToExist * 20) + 2);
     }
 
-    private void removeMessageGroup(MessageGroup group) {
-        if (!messageGroups.contains(group)) return;
-        var currentGroupIndex = messageGroups.indexOf(group);
+    private void removeDisplayedMessage(DisplayedMessage displayedMessage) {
+        if (!displayedMessages.contains(displayedMessage)) return;
+        var currentDisplayedMessageIndex = displayedMessages.indexOf(displayedMessage);
 
-        // Remove all entities in the group
-        for (Entity entity : group.entities) {
+        // Remove all entities in the displayed message
+        for (Entity entity : displayedMessage.entities) {
             entity.remove();
             entities.remove(entity);
         }
 
-        messageGroups.remove(group);
+        displayedMessages.remove(displayedMessage);
 
-        // Return if there's no entities left
+        // Return if there are no entities left
         if (entities.isEmpty()) return;
 
-        // The current group index turns into the next group index because the current group was deleted from the list
-        var nextGroupIndex = currentGroupIndex;
-        if (nextGroupIndex >= messageGroups.size()) return; // Return if no further groups left
-        var nextGroup = messageGroups.get(nextGroupIndex);
+        // The current displayedMessage index turns into the next displayedMessage index because the current displayedMessage was deleted from the list
+        var nextDisplayedMessageIndex = currentDisplayedMessageIndex;
+        if (nextDisplayedMessageIndex >= displayedMessages.size()) return; // Return if no further displayed messages left
+        var nextDisplayedMessage = displayedMessages.get(nextDisplayedMessageIndex);
 
-        // Determining the message group standing before in the list
-        var prevGroupIndex = nextGroupIndex - 1;
-        if (prevGroupIndex >= 0) {
-            // If there's a potential group, transfer the message there
-            var prevGroup = messageGroups.get(prevGroupIndex);
-            prevGroup.entities.get(prevGroup.entities.size() - 1).addPassenger(nextGroup.entities.get(0));
+        // Determining the message displayedMessage standing before in the list
+        var prevDisplayedMessageIndex = nextDisplayedMessageIndex - 1;
+        if (prevDisplayedMessageIndex >= 0) {
+            // If there's a potential displayedMessage, transfer the message there
+            var prevDisplayedMessage = displayedMessages.get(prevDisplayedMessageIndex);
+            prevDisplayedMessage.entities.get(prevDisplayedMessage.entities.size() - 1).addPassenger(nextDisplayedMessage.entities.get(0));
             return;
         }
 
         var middleEntities = spawnMiddleEntities(plugin.getConfig().getBoolean("lowerMode") ? 1 : 2);
-        middleEntities.get(middleEntities.size() - 1).addPassenger(nextGroup.entities.get(0));
-        nextGroup.entities.addAll(0, middleEntities);
+        middleEntities.get(middleEntities.size() - 1).addPassenger(nextDisplayedMessage.entities.get(0));
+        nextDisplayedMessage.entities.addAll(0, middleEntities);
 
         player.addPassenger(middleEntities.get(0));
     }

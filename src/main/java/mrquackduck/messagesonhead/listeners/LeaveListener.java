@@ -1,6 +1,6 @@
 package mrquackduck.messagesonhead.listeners;
 
-import mrquackduck.messagesonhead.classes.MessagesStack;
+import mrquackduck.messagesonhead.classes.MessageStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -8,6 +8,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class LeaveListener implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
-        MessagesStack.resetPlayerMessageStack(event.getPlayer());
+        MessageStack.resetPlayerMessageStack(event.getPlayer());
     }
 }

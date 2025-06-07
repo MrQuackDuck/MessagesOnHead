@@ -1,7 +1,7 @@
 package mrquackduck.messagesonhead;
 
 import com.tchristofferson.configupdater.ConfigUpdater;
-import mrquackduck.messagesonhead.classes.MessagesStack;
+import mrquackduck.messagesonhead.classes.MessageStack;
 import mrquackduck.messagesonhead.commands.MohCommand;
 import mrquackduck.messagesonhead.listeners.LeaveListener;
 import mrquackduck.messagesonhead.listeners.SendMessageListener;
@@ -52,7 +52,7 @@ public final class MessagesOnHeadPlugin extends JavaPlugin {
         setupMessages();
 
         // Remove all entities related to the plugin
-        MessagesStack.cleanUp(this);
+        MessageStack.cleanUp(this);
     }
 
     public void reload() {

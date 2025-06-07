@@ -2,7 +2,7 @@ package mrquackduck.messagesonhead.listeners;
 
 import io.papermc.paper.event.player.ChatEvent;
 import mrquackduck.messagesonhead.MessagesOnHeadPlugin;
-import mrquackduck.messagesonhead.classes.MessagesStack;
+import mrquackduck.messagesonhead.classes.MessageStack;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.GameMode;
 import org.bukkit.entity.*;
@@ -24,9 +24,9 @@ public class SendMessageListener implements Listener {
         if (!player.hasPermission("messagesonhead.show")) return;
         if (player.getGameMode() == GameMode.SPECTATOR) return;
 
-        var stack = MessagesStack.getMessagesStack(player, plugin);
+        var stack = MessageStack.getMessagesStack(player, plugin);
 
         var plainMessage = PlainTextComponentSerializer.plainText().serialize(event.message());
-        stack.addMessage(plainMessage);
+        stack.pushMessage(plainMessage);
     }
 }

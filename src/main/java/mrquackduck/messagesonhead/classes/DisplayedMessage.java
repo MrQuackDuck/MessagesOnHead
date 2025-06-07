@@ -4,12 +4,13 @@ import org.bukkit.entity.Entity;
 
 import java.util.List;
 
-public class MessageGroup {
+/**
+ * A structure that stores all entities related to a single displayed message
+ */
+public class DisplayedMessage {
     final List<Entity> entities;
-    final int lineCount;
 
-    MessageGroup(List<Entity> entities, int lineCount) {
+    DisplayedMessage(List<Entity> entities) {
         this.entities = entities;
-        this.lineCount = lineCount;
     }
 }

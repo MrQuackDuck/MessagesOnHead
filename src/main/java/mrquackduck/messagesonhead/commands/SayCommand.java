@@ -1,7 +1,7 @@
 package mrquackduck.messagesonhead.commands;
 
 import mrquackduck.messagesonhead.MessagesOnHeadPlugin;
-import mrquackduck.messagesonhead.classes.MessagesStack;
+import mrquackduck.messagesonhead.classes.MessageStack;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,8 +29,8 @@ public class SayCommand implements CommandExecutor {
             message.append(args[i]);
         }
 
-        var stack = MessagesStack.getMessagesStack(player, plugin);
-        stack.addMessage(message.toString());
+        var stack = MessageStack.getMessagesStack(player, plugin);
+        stack.pushMessage(message.toString());
 
         return true;
     }
