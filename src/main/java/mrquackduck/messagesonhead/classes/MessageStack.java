@@ -4,11 +4,9 @@ import mrquackduck.messagesonhead.utils.ColorUtils;
 import mrquackduck.messagesonhead.utils.EntityUtils;
 import mrquackduck.messagesonhead.utils.StringUtils;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
 import org.bukkit.entity.*;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -183,7 +181,6 @@ public class MessageStack {
         }
         textDisplay.setShadowed(isShadowed);
         textDisplay.setLineWidth(Integer.MAX_VALUE);
-        textDisplay.setMetadata(customEntityTag, new FixedMetadataValue(plugin, ((TextComponent)player.displayName()).content()));
         textDisplay.addScoreboardTag(customEntityTag);
 
         if (showTimer) {
@@ -226,7 +223,6 @@ public class MessageStack {
             entity.setRadius(0);
             entity.setInvulnerable(true);
             entity.setGravity(false);
-            entity.setMetadata(customEntityTag, new FixedMetadataValue(plugin, ((TextComponent)player.displayName()).content()));
             // Adding a scoreboard tag in order to distinguish from regular entity and be able to make the cleanup
             entity.addScoreboardTag(customEntityTag);
             middleEntities.add(entity);
