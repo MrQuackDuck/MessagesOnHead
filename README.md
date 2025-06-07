@@ -22,6 +22,7 @@ The plugin's functionality is based on the [Text Display](https://minecraft.wiki
 
 ### 🔞 Permissions
 
+- `messagesonhead.show` _(**true** by default)_  — Whether messages will appear above player's head.
 - `messagesonhead.admin` _(for **operators** by default)_ — Allows to use the `/moh` command.
 
 ### 💻 Commands
