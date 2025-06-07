@@ -1,7 +1,6 @@
 package mrquackduck.messagesonhead.classes;
 
 import mrquackduck.messagesonhead.utils.ColorUtils;
-import mrquackduck.messagesonhead.utils.EntityUtils;
 import mrquackduck.messagesonhead.utils.StringUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -20,11 +19,9 @@ public class MessageStack {
     private final Player player;
     private final List<Entity> entities = new ArrayList<>();
     private final List<DisplayedMessage> displayedMessages = new ArrayList<>();
-    private final static HashMap<UUID, MessageStack> playersStacks = new HashMap<>();
+    public static final String customEntityTag = "moh-entity";
 
-    private final static String customEntityTag = "moh-entity";
-
-    private MessageStack(Player player, Plugin plugin) {
+    public MessageStack(Player player, Plugin plugin) {
         this.player = player;
         this.plugin = plugin;
         findExistingStackEntities();
@@ -48,34 +45,8 @@ public class MessageStack {
         }
     }
 
-    public static MessageStack getMessagesStack(Player player, Plugin plugin) {
-        var stack = playersStacks.get(player.getUniqueId());
-        if (stack != null) return stack;
-
-        stack = new MessageStack(player, plugin);
-        playersStacks.put(player.getUniqueId(), stack);
-        return stack;
-    }
-
-    public static void resetPlayerMessageStack(Player player) {
-        var playerData = playersStacks.get(player.getUniqueId());
-        if (playerData != null) playerData.deleteAllRelatedEntities();
-        playersStacks.remove(player.getUniqueId());
-    }
-
-    private void deleteAllRelatedEntities() {
+    public void deleteAllRelatedEntities() {
         for (Entity entity : entities) entity.remove();
-    }
-
-    public static void cleanUp(Plugin plugin) {
-        playersStacks.clear();
-        for (World world : plugin.getServer().getWorlds()) {
-            for (Entity entity : world.getEntities()) {
-                if (EntityUtils.hasScoreboardTagCaseInvariant(entity, customEntityTag)) {
-                    entity.remove();
-                }
-            }
-        }
     }
 
     public void pushMessage(String text) {

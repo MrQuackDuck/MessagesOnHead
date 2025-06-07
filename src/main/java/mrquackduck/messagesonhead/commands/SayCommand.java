@@ -1,7 +1,7 @@
 package mrquackduck.messagesonhead.commands;
 
 import mrquackduck.messagesonhead.MessagesOnHeadPlugin;
-import mrquackduck.messagesonhead.classes.MessageStack;
+import mrquackduck.messagesonhead.classes.MessageStackRepository;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,10 +9,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class SayCommand implements CommandExecutor {
+    private final MessageStackRepository messageStackRepository;
     private final MessagesOnHeadPlugin plugin;
 
-    public SayCommand(MessagesOnHeadPlugin plugin) {
+    public SayCommand(MessagesOnHeadPlugin plugin, MessageStackRepository messageStackRepository) {
         this.plugin = plugin;
+        this.messageStackRepository = messageStackRepository;
     }
 
     @Override
@@ -29,8 +31,8 @@ public class SayCommand implements CommandExecutor {
             message.append(args[i]);
         }
 
-        var stack = MessageStack.getMessagesStack(player, plugin);
-        stack.pushMessage(message.toString());
+        var messageStack = messageStackRepository.getMessageStack(player);
+        messageStack.pushMessage(message.toString());
 
         return true;
     }

@@ -1,7 +1,7 @@
 package mrquackduck.messagesonhead;
 
 import com.tchristofferson.configupdater.ConfigUpdater;
-import mrquackduck.messagesonhead.classes.MessageStack;
+import mrquackduck.messagesonhead.classes.MessageStackRepository;
 import mrquackduck.messagesonhead.commands.MohCommand;
 import mrquackduck.messagesonhead.listeners.LeaveListener;
 import mrquackduck.messagesonhead.listeners.SendMessageListener;
@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 public final class MessagesOnHeadPlugin extends JavaPlugin {
     private Logger logger;
+    private MessageStackRepository messageStackRepository;
     private static Map<String, String> messages = new HashMap<>();
 
     @Override
@@ -27,16 +28,19 @@ public final class MessagesOnHeadPlugin extends JavaPlugin {
         // Setting up a logger
         logger = getLogger();
 
+        // Setup message stack repository
+        this.messageStackRepository = new MessageStackRepository(this);
+
         // Register listeners
-        getServer().getPluginManager().registerEvents(new SendMessageListener(this), this);
-        getServer().getPluginManager().registerEvents(new LeaveListener(), this);
+        getServer().getPluginManager().registerEvents(new SendMessageListener(messageStackRepository), this);
+        getServer().getPluginManager().registerEvents(new LeaveListener(messageStackRepository), this);
 
         // Starting the plugin
         try { start(); }
         catch (RuntimeException e) { getLogger().log(Level.SEVERE, e.getMessage()); }
 
         // Registering commands
-        Objects.requireNonNull(getServer().getPluginCommand("messagesonhead")).setExecutor(new MohCommand(this));
+        Objects.requireNonNull(getServer().getPluginCommand("messagesonhead")).setExecutor(new MohCommand(this, messageStackRepository));
     }
 
     private void start() {
@@ -52,7 +56,7 @@ public final class MessagesOnHeadPlugin extends JavaPlugin {
         setupMessages();
 
         // Remove all entities related to the plugin
-        MessageStack.cleanUp(this);
+        messageStackRepository.cleanUp();
     }
 
     public void reload() {

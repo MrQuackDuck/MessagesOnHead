@@ -1,8 +1,7 @@
 package mrquackduck.messagesonhead.listeners;
 
 import io.papermc.paper.event.player.ChatEvent;
-import mrquackduck.messagesonhead.MessagesOnHeadPlugin;
-import mrquackduck.messagesonhead.classes.MessageStack;
+import mrquackduck.messagesonhead.classes.MessageStackRepository;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.GameMode;
 import org.bukkit.entity.*;
@@ -11,10 +10,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class SendMessageListener implements Listener {
-    private final MessagesOnHeadPlugin plugin;
+    private final MessageStackRepository messageStackRepository;
 
-    public SendMessageListener(MessagesOnHeadPlugin plugin) {
-        this.plugin = plugin;
+    public SendMessageListener(MessageStackRepository messageStackRepository) {
+        this.messageStackRepository = messageStackRepository;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -24,9 +23,9 @@ public class SendMessageListener implements Listener {
         if (!player.hasPermission("messagesonhead.show")) return;
         if (player.getGameMode() == GameMode.SPECTATOR) return;
 
-        var stack = MessageStack.getMessagesStack(player, plugin);
+        var messageStack = messageStackRepository.getMessageStack(player);
 
         var plainMessage = PlainTextComponentSerializer.plainText().serialize(event.message());
-        stack.pushMessage(plainMessage);
+        messageStack.pushMessage(plainMessage);
     }
 }

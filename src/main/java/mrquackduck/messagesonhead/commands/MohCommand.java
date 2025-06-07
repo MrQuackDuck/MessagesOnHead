@@ -1,6 +1,7 @@
 package mrquackduck.messagesonhead.commands;
 
 import mrquackduck.messagesonhead.MessagesOnHeadPlugin;
+import mrquackduck.messagesonhead.classes.MessageStackRepository;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,9 +17,11 @@ import java.util.List;
 
 public class MohCommand implements CommandExecutor, TabCompleter {
     private final MessagesOnHeadPlugin plugin;
+    private final MessageStackRepository messageStackRepository;
 
-    public MohCommand(MessagesOnHeadPlugin plugin) {
+    public MohCommand(MessagesOnHeadPlugin plugin, MessageStackRepository messageStackRepository) {
         this.plugin = plugin;
+        this.messageStackRepository = messageStackRepository;
     }
 
     @Override
@@ -27,7 +30,7 @@ public class MohCommand implements CommandExecutor, TabCompleter {
             return new InfoCommand().onCommand(commandSender, command, s, args);
         }
         else if (args[0].equalsIgnoreCase("say") && args.length >= 3 && commandSender.hasPermission("messagesonhead.admin")) {
-            return new SayCommand(plugin).onCommand(commandSender, command, s, args);
+            return new SayCommand(plugin, messageStackRepository).onCommand(commandSender, command, s, args);
         }
         else if (args[0].equalsIgnoreCase("reload") && commandSender.hasPermission("messagesonhead.admin")) {
             return new ReloadCommand(plugin).onCommand(commandSender, command, s, args);
