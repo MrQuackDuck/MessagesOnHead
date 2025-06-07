@@ -20,6 +20,8 @@ public class SendMessageListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onMessageSent(ChatEvent event) {
         Player player = event.getPlayer();
+
+        if (!player.hasPermission("messagesonhead.show")) return;
         if (player.getGameMode() == GameMode.SPECTATOR) return;
 
         var stack = MessagesStack.getMessagesStack(player, plugin);

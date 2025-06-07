@@ -11,6 +11,9 @@ commands:
       - moh
 
 permissions:
+  messagesonhead.show:
+    description: Whether messages will appear above player's head
+    default: true
   messagesonhead.admin:
     description: Allows to use staff commands of the plugin
     default: op
