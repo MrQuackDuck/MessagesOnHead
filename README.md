@@ -19,6 +19,7 @@ The plugin's functionality is based on the [Text Display](https://minecraft.wiki
 - **Timer**: You can enable/disable the timer at the end of the message that shows how much time is left until the message is gone.
 - **Time scaling**: you can make longer messages exist for more time.
 - **Colors and style**: you can choose the color of the text, its background, whether the text is shadowed and the color for the timer.
+- **PlaceholderAPI support**: you can configure a placeholder that will color your text displays.
 
 ### 🔞 Permissions
 
@@ -48,7 +49,7 @@ scalingEnabled: true
 # will exist for extra 5 seconds if the coefficient is set to 0.1 (because 0.1 * 50 = 5)
 scalingCoefficient: 0.05
 
-# Whether messages should be displayed on the same level as the nickname (for servers with nicknames disabled)
+# Whether messages should be displayed on the same level as the nickname (for servers where nicknames are disabled)
 lowerMode: true
 
 textColor: "#FFFFFF"
@@ -61,9 +62,18 @@ timerColor: "#F4CA16"
 
 backgroundEnabled: true
 backgroundColor: "#000000"
-backgroundTransparencyPercentage: 100 # Range: [0, 100]
+# Range: [0, 100]
+backgroundTransparencyPercentage: 100
 
+# Whether a text will have a shadow
 isShadowed: true
+
+# You may enable this if you use a plugin for per-player chat color customization (e.g., EZColors, ChatColor etc.)
+placeholderApiIntegration: false
+# Name of a placeholder that will be put before each text line
+colorPlaceholder: "%ezcolors_color%"
+# Format for text lines if `placeholderApiIntegration` is true
+lineFormat: "&[defaultColor]&[colorPlaceholder][message]"
 
 messages:
   "prefix": "&#F4CA16[MessagesOnHead]"
