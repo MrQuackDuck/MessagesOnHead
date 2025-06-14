@@ -1,29 +1,33 @@
 package mrquackduck.messagesonhead.classes;
 
+import mrquackduck.messagesonhead.configuration.Configuration;
 import mrquackduck.messagesonhead.utils.ColorUtils;
 import mrquackduck.messagesonhead.utils.StringUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
 import org.bukkit.entity.*;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
 /**
- * Represents a stack of displayed messages on top of player's head
+ * Represents a stack of displayed messages above player's head
  */
 public class MessageStack {
-    private final Plugin plugin;
+    private final JavaPlugin plugin;
+    private final Configuration config;
     private final Player player;
     private final List<Entity> entities = new ArrayList<>();
     private final List<DisplayedMessage> displayedMessages = new ArrayList<>();
     public static final String customEntityTag = "moh-entity";
 
-    public MessageStack(Player player, Plugin plugin) {
-        this.player = player;
+    public MessageStack(Player player, JavaPlugin plugin) {
         this.plugin = plugin;
+        this.config = new Configuration(plugin);
+        this.player = player;
         findExistingStackEntities();
     }
 
@@ -51,9 +55,9 @@ public class MessageStack {
 
     public void pushMessage(String text) {
         var secondsToExist = calculateTimeForMessageToExist(text);
-        var minSymbolsForTimer = plugin.getConfig().getInt("minSymbolsForTimer");
+        var minSymbolsForTimer = config.minSymbolsForTimer();
 
-        List<String> lines = StringUtils.splitTextIntoLines(text, plugin.getConfig().getInt("symbolsPerLine"), plugin.getConfig().getInt("symbolsLimit"));
+        List<String> lines = StringUtils.splitTextIntoLines(text, config.symbolsPerLine(), config.symbolsLimit());
         Collections.reverse(lines); // Reverse to stack from bottom to top
 
         Entity currentEntityToSitOn = getEntityToSitOn();
@@ -66,7 +70,7 @@ public class MessageStack {
 
             int middleEntitiesToSpawn = 1;
             if (currentEntityToSitOn.getType() == EntityType.PLAYER) middleEntitiesToSpawn = 2;
-            if (currentEntityToSitOn.getType() == EntityType.PLAYER && !plugin.getConfig().getBoolean("lowerMode")) middleEntitiesToSpawn = 3;
+            if (currentEntityToSitOn.getType() == EntityType.PLAYER && !config.isLowerModeEnabled()) middleEntitiesToSpawn = 3;
 
             final var middleEntities = spawnMiddleEntities(middleEntitiesToSpawn);
             final var textDisplay = spawnTextDisplay(player.getLocation(), line, secondsToExist, needToShowTimer);
@@ -120,7 +124,7 @@ public class MessageStack {
             return;
         }
 
-        var middleEntities = spawnMiddleEntities(plugin.getConfig().getBoolean("lowerMode") ? 1 : 2);
+        var middleEntities = spawnMiddleEntities(config.isLowerModeEnabled() ? 1 : 2);
         middleEntities.get(middleEntities.size() - 1).addPassenger(nextDisplayedMessage.entities.get(0));
         nextDisplayedMessage.entities.addAll(0, middleEntities);
 
@@ -128,58 +132,45 @@ public class MessageStack {
     }
 
     private TextDisplay spawnTextDisplay(Location location, String text, double secondsToExist, boolean showTimer) {
-        var config = plugin.getConfig();
-        var textColor = config.getString("textColor");
-        var backgroundColor = config.getString("backgroundColor");
-        var backgroundTransparencyPercentage = config.getInt("backgroundTransparencyPercentage");
-        var backgroundEnabled = config.getBoolean("backgroundEnabled");
-        var timerEnabled = config.getBoolean("timerEnabled");
-        var timerColor = config.getString("timerColor");
-        if (showTimer && !timerEnabled) showTimer = false;
-        var isShadowed = config.getBoolean("isShadowed");
+        if (showTimer && !config.isTimerEnabled()) showTimer = false;
         location.setY(255); // Setting high Y coordinate to prevent the message appearing from bottom
 
-        assert textColor != null;
-        assert timerColor != null;
-
         final var textDisplay = (TextDisplay) Objects.requireNonNull(location.getWorld()).spawnEntity(location, EntityType.TEXT_DISPLAY);
+        if (config.isBackgroundEnabled()) textDisplay.setBackgroundColor(Color.fromARGB(ColorUtils.hexToARGB(config.backgroundColor(),config.backgroundTransparencyPercentage())));
+        textDisplay.setDefaultBackground(!config.isBackgroundEnabled());
         textDisplay.setBillboard(Display.Billboard.VERTICAL);
         textDisplay.setRotation(location.getYaw(), 0);
-        textDisplay.setDefaultBackground(!backgroundEnabled);
-        if (backgroundEnabled) {
-            assert backgroundColor != null;
-            textDisplay.setBackgroundColor(Color.fromARGB(ColorUtils.hexToARGB(backgroundColor, backgroundTransparencyPercentage)));
-        }
-        textDisplay.setShadowed(isShadowed);
+        textDisplay.setShadowed(config.isShadowed());
         textDisplay.setLineWidth(Integer.MAX_VALUE);
         textDisplay.addScoreboardTag(customEntityTag);
 
-        if (showTimer) {
-            new BukkitRunnable() {
-                double timeLeft = secondsToExist;
-
-                @Override
-                public void run() {
-                    // Allow for one extra tick to show 0.0
-                    if (textDisplay.isDead() || timeLeft < -0.1) {
-                        this.cancel();
-                        return;
-                    }
-
-                    var timerFormat = config.getString("timerFormat");
-                    assert timerFormat != null;
-                    String timerText = String.format(timerFormat, Math.max(0.0, timeLeft)); // Ensure we don't show negative numbers
-                    textDisplay.text(Component.text(text).color(TextColor.fromHexString(textColor))
-                                    .append(Component.text(timerText).color(TextColor.fromHexString(timerColor))));
-
-                    timeLeft -= 0.1;
-                }
-            }.runTaskTimer(plugin, 1, 2);
-        } else {
-            textDisplay.text(Component.text(text).color(TextColor.fromHexString(textColor)));
-        }
+        var textToBeDisplayed = Component.text(text).color(TextColor.fromHexString(config.textColor()));
+        if (showTimer) showTextDisplayWithTimer(textDisplay, textToBeDisplayed, secondsToExist);
+        else textDisplay.text(textToBeDisplayed);
 
         return textDisplay;
+    }
+
+    private void showTextDisplayWithTimer(TextDisplay textDisplay, TextComponent textToBeDisplayed, double secondsToExist) {
+        new BukkitRunnable() {
+            double timeLeft = secondsToExist;
+
+            @Override
+            public void run() {
+                // Allow for one extra tick to show 0.0
+                if (textDisplay.isDead() || timeLeft < -0.1) {
+                    this.cancel();
+                    return;
+                }
+
+                var timerFormat = config.timerFormat();
+                assert timerFormat != null;
+                String timerText = String.format(timerFormat, Math.max(0.0, timeLeft)); // Ensure we don't show negative numbers
+                textDisplay.text(textToBeDisplayed.append(Component.text(timerText).color(TextColor.fromHexString(config.timerColor()))));
+
+                timeLeft -= 0.1;
+            }
+        }.runTaskTimer(plugin, 1, 2);
     }
 
     private List<Entity> spawnMiddleEntities(int count) {
@@ -205,10 +196,10 @@ public class MessageStack {
     }
 
     private double calculateTimeForMessageToExist(String message) {
-        double initialTime = plugin.getConfig().getLong("timeToExist");
-        var scalingEnabled = plugin.getConfig().getBoolean("scalingEnabled");
+        double initialTime = config.timeToExist();
+        var scalingEnabled = config.isScalingEnabled();
         if (scalingEnabled) {
-            var scalingCoefficient = plugin.getConfig().getDouble("scalingCoefficient");
+            var scalingCoefficient = config.scalingCoefficient();
             initialTime += (scalingCoefficient * message.length());
         }
 
