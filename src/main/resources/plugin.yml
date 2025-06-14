@@ -18,4 +18,4 @@ permissions:
     description: Allows to use staff commands of the plugin
     default: op
 
-depend: [PlaceholderAPI]
+softdepend: [PlaceholderAPI]
