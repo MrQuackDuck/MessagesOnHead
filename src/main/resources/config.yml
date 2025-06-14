@@ -29,7 +29,7 @@ backgroundTransparencyPercentage: 100
 # Whether a text will have a shadow
 isShadowed: true
 
-# You may enable this if you use a plugin for per-player chat color customization (e.g., ChatColor, EZColors etc.)
+# You may enable this if you use a plugin for per-player chat color customization (e.g., EZColors, ChatColor etc.)
 placeholderApiIntegration: false
 # Name of a placeholder that will be put before each text line
 colorPlaceholder: "%ezcolors_color%"
