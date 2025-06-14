@@ -1,6 +1,5 @@
 package mrquackduck.messagesonhead.configuration;
 
-import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Configuration extends ConfigurationBase {
@@ -66,5 +65,17 @@ public class Configuration extends ConfigurationBase {
 
     public double scalingCoefficient() {
         return getDouble("scalingCoefficient");
+    }
+
+    public boolean isPlaceholderApiIntegrationEnabled() {
+        return getBoolean("placeholderApiIntegration");
+    }
+
+    public String colorPlaceholder() {
+        return getString("colorPlaceholder");
+    }
+
+    public String lineFormat() {
+        return getString("lineFormat");
     }
 }

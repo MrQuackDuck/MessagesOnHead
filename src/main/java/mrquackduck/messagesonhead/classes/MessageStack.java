@@ -1,11 +1,13 @@
 package mrquackduck.messagesonhead.classes;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import mrquackduck.messagesonhead.configuration.Configuration;
 import mrquackduck.messagesonhead.utils.ColorUtils;
 import mrquackduck.messagesonhead.utils.StringUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -145,6 +147,16 @@ public class MessageStack {
         textDisplay.addScoreboardTag(customEntityTag);
 
         var textToBeDisplayed = Component.text(text).color(TextColor.fromHexString(config.textColor()));
+        if (config.isPlaceholderApiIntegrationEnabled()) {
+            text = config.lineFormat()
+                    .replace("[defaultColor]", config.textColor())
+                    .replace("[colorPlaceholder]", config.colorPlaceholder())
+                    .replace("[message]", text);
+
+            text = PlaceholderAPI.setPlaceholders(player, text);
+            textToBeDisplayed = LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+        }
+
         if (showTimer) showTextDisplayWithTimer(textDisplay, textToBeDisplayed, secondsToExist);
         else textDisplay.text(textToBeDisplayed);
 
