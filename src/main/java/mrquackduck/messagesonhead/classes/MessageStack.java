@@ -56,6 +56,7 @@ public class MessageStack {
     }
 
     public void pushMessage(String text) {
+        if (text.isEmpty()) return;
         var secondsToExist = calculateTimeForMessageToExist(text);
         var minSymbolsForTimer = config.minSymbolsForTimer();
 
@@ -153,7 +154,7 @@ public class MessageStack {
                     .replace("[colorPlaceholder]", config.colorPlaceholder())
                     .replace("[message]", text);
 
-            text = PlaceholderAPI.setPlaceholders(player, text);
+            text = applyColorPlaceholders(text);
             textToBeDisplayed = LegacyComponentSerializer.legacyAmpersand().deserialize(text);
         }
 
@@ -183,6 +184,21 @@ public class MessageStack {
                 timeLeft -= 0.1;
             }
         }.runTaskTimer(plugin, 1, 2);
+    }
+
+    private String applyColorPlaceholders(String text) {
+        String resolvedColorCode = PlaceholderAPI.setPlaceholders(player, config.colorPlaceholder());
+        if (resolvedColorCode.isEmpty()) {
+            // Remove color code if placeholder returns empty
+            text = text.replace('&' + config.colorPlaceholder(), "");
+        }
+        else {
+            // Replace placeholder with actual color code
+            text = text.replace(config.colorPlaceholder(), resolvedColorCode);
+        }
+
+        text = text.replace("&&", "&");
+        return text;
     }
 
     private List<Entity> spawnMiddleEntities(int count) {
