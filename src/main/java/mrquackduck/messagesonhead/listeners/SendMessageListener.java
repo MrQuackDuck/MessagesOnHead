@@ -2,6 +2,7 @@ package mrquackduck.messagesonhead.listeners;
 
 import io.papermc.paper.event.player.ChatEvent;
 import mrquackduck.messagesonhead.classes.MessageStackRepository;
+import mrquackduck.messagesonhead.utils.ColorUtils;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.GameMode;
 import org.bukkit.entity.*;
@@ -26,6 +27,7 @@ public class SendMessageListener implements Listener {
         var messageStack = messageStackRepository.getMessageStack(player);
 
         var plainMessage = PlainTextComponentSerializer.plainText().serialize(event.message());
-        messageStack.pushMessage(plainMessage);
+        var sanitizedMessage = ColorUtils.removeColorCodes(plainMessage);
+        messageStack.pushMessage(sanitizedMessage);
     }
 }

@@ -19,4 +19,8 @@ public class ColorUtils {
         // Return ARGB as a single integer
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
     }
+
+    public static String removeColorCodes(String text) {
+        return text.replace("&", "");
+    }
 }
