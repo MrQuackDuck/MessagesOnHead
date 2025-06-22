@@ -29,6 +29,13 @@ backgroundTransparencyPercentage: 100
 # Whether a text will have a shadow
 isShadowed: true
 
+# How a text display can pivot:
+# VERTICAL - Can pivot around vertical axis
+# HORIZONTAL - Can pivot around horizontal axis
+# CENTER - Can pivot around center point
+# FIXED - No rotation
+pivotAxis: "VERTICAL"
+
 # You may enable this if you use a plugin for per-player chat color customization (e.g., EZColors, ChatColor etc.)
 placeholderApiIntegration: false
 # Name of a placeholder that will be put before each text line

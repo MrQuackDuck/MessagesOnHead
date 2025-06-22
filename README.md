@@ -19,6 +19,7 @@ The plugin's functionality is based on the [Text Display](https://minecraft.wiki
 - **Timer**: You can enable/disable the timer at the end of the message that shows how much time is left until the message is gone.
 - **Time scaling**: you can make longer messages exist for more time.
 - **Colors and style**: you can choose the color of the text, its background, whether the text is shadowed and the color for the timer.
+- **Rotation**: you may configure how a text display will rotate in the `pivotAxis` field.
 - **PlaceholderAPI support**: you can configure a placeholder that will color your text displays.
 
 ### 🔞 Permissions
@@ -67,6 +68,13 @@ backgroundTransparencyPercentage: 100
 
 # Whether a text will have a shadow
 isShadowed: true
+
+# How a text display can pivot:
+# VERTICAL - Can pivot around vertical axis
+# HORIZONTAL - Can pivot around horizontal axis
+# CENTER - Can pivot around center point
+# FIXED - No rotation
+pivotAxis: "VERTICAL"
 
 # You may enable this if you use a plugin for per-player chat color customization (e.g., EZColors, ChatColor etc.)
 placeholderApiIntegration: false
