@@ -141,7 +141,7 @@ public class MessageStack {
         final var textDisplay = (TextDisplay) Objects.requireNonNull(location.getWorld()).spawnEntity(location, EntityType.TEXT_DISPLAY);
         if (config.isBackgroundEnabled()) textDisplay.setBackgroundColor(Color.fromARGB(ColorUtils.hexToARGB(config.backgroundColor(),config.backgroundTransparencyPercentage())));
         textDisplay.setDefaultBackground(!config.isBackgroundEnabled());
-        textDisplay.setBillboard(Display.Billboard.VERTICAL);
+        textDisplay.setBillboard(config.pivotAxis());
         textDisplay.setRotation(location.getYaw(), 0);
         textDisplay.setShadowed(config.isShadowed());
         textDisplay.setLineWidth(Integer.MAX_VALUE);

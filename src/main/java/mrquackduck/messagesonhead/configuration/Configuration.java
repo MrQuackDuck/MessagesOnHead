@@ -1,5 +1,6 @@
 package mrquackduck.messagesonhead.configuration;
 
+import org.bukkit.entity.Display;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Configuration extends ConfigurationBase {
@@ -77,5 +78,9 @@ public class Configuration extends ConfigurationBase {
 
     public String lineFormat() {
         return getString("lineFormat");
+    }
+
+    public Display.Billboard pivotAxis() {
+        return getEnumValue("pivotAxis", Display.Billboard.class, Display.Billboard.VERTICAL);
     }
 }

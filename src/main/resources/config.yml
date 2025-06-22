@@ -26,6 +26,13 @@ backgroundColor: "#000000"
 # Range: [0, 100]
 backgroundTransparencyPercentage: 100
 
+# How a text display can pivot:
+# VERTICAL - Can pivot around vertical axis
+# HORIZONTAL - Can pivot around horizontal axis
+# CENTER - Can pivot around center point
+# FIXED - No rotation
+pivotAxis: "VERTICAL"
+
 # Whether a text will have a shadow
 isShadowed: true
 
