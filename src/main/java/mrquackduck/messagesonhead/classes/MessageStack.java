@@ -136,7 +136,7 @@ public class MessageStack {
 
     private TextDisplay spawnTextDisplay(Location location, String text, double secondsToExist, boolean showTimer) {
         if (showTimer && !config.isTimerEnabled()) showTimer = false;
-        location.setY(255); // Setting high Y coordinate to prevent the message appearing from bottom
+        location.setY(location.y() + 50); // Setting higher Y coordinate to prevent the message appearing from bottom
 
         final var textDisplay = (TextDisplay) Objects.requireNonNull(location.getWorld()).spawnEntity(location, EntityType.TEXT_DISPLAY);
         if (config.isBackgroundEnabled()) textDisplay.setBackgroundColor(Color.fromARGB(ColorUtils.hexToARGB(config.backgroundColor(),config.backgroundTransparencyPercentage())));
