@@ -3,6 +3,7 @@ package mrquackduck.messagesonhead.classes;
 import me.clip.placeholderapi.PlaceholderAPI;
 import mrquackduck.messagesonhead.configuration.Configuration;
 import mrquackduck.messagesonhead.utils.ColorUtils;
+import mrquackduck.messagesonhead.utils.EntityUtils;
 import mrquackduck.messagesonhead.utils.StringUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -39,8 +40,7 @@ public class MessageStack {
             var passengers = currentEntity.getPassengers();
             var needToBreak = true;
             for (Entity passenger : passengers) {
-                var passengerType = passenger.getType();
-                if (passengerType == EntityType.AREA_EFFECT_CLOUD || passengerType == EntityType.TEXT_DISPLAY) {
+                if (EntityUtils.hasScoreboardTagCaseInvariant(passenger, customEntityTag)) {
                     currentEntity = passenger;
                     entities.add(passenger);
                     needToBreak = false;
