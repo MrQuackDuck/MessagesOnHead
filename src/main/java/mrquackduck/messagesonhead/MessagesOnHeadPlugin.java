@@ -43,6 +43,12 @@ public final class MessagesOnHeadPlugin extends JavaPlugin {
         Objects.requireNonNull(getServer().getPluginCommand("messagesonhead")).setExecutor(new MohCommand(this, messageStackRepository));
     }
 
+    @Override
+    public void onDisable() {
+        // Remove all entities related to the plugin
+        messageStackRepository.cleanUp();
+    }
+
     private void start() {
         // Save default configuration
         saveDefaultConfig();
