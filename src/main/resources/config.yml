@@ -10,8 +10,9 @@ scalingEnabled: true
 # will exist for extra 5 seconds if the coefficient is set to 0.1 (because 0.1 * 50 = 5)
 scalingCoefficient: 0.05
 
-# Whether messages should be displayed on the same level as the nickname (for servers where nicknames are disabled)
-lowerMode: true
+# Distances between messages / above player's head
+gapBetweenMessages: 0.3
+gapAboveHead: 0.4
 
 textColor: "#FFFFFF"
 

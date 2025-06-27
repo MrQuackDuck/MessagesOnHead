@@ -61,26 +61,27 @@ public class MessageStack {
         var minSymbolsForTimer = config.minSymbolsForTimer();
 
         List<String> lines = StringUtils.splitTextIntoLines(text, config.symbolsPerLine(), config.symbolsLimit());
-        Collections.reverse(lines); // Reverse to stack from bottom to top
+        Collections.reverse(lines); // Reverse the stack from bottom to top
 
         Entity currentEntityToSitOn = getEntityToSitOn();
         List<Entity> newEntities = new ArrayList<>();
 
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
-            boolean isLastLine = (i == 0); // Since lines are reversed, first index is actually the last line
+            boolean isLastLine = (i == 0); // Since lines are reversed, first index points on the last line
             boolean needToShowTimer = isLastLine && text.length() >= minSymbolsForTimer;
 
-            int middleEntitiesToSpawn = 1;
-            if (currentEntityToSitOn.getType() == EntityType.PLAYER) middleEntitiesToSpawn = 2;
-            if (currentEntityToSitOn.getType() == EntityType.PLAYER && !config.isLowerModeEnabled()) middleEntitiesToSpawn = 3;
+            var middleEntityHeight = config.gapBetweenMessages();
+            if (currentEntityToSitOn.getType() == EntityType.PLAYER) {
+                middleEntityHeight = config.gapAboveHead();
+            }
 
-            final var middleEntities = spawnMiddleEntities(middleEntitiesToSpawn);
+            final var middleEntity = spawnMiddleEntity(middleEntityHeight);
             final var textDisplay = spawnTextDisplay(player.getLocation(), line, secondsToExist, needToShowTimer);
-            middleEntities.get(middleEntities.size() - 1).addPassenger(textDisplay);
-            currentEntityToSitOn.addPassenger(middleEntities.get(0));
+            middleEntity.addPassenger(textDisplay);
+            currentEntityToSitOn.addPassenger(middleEntity);
 
-            newEntities.addAll(middleEntities);
+            newEntities.add(middleEntity);
             newEntities.add(textDisplay);
 
             currentEntityToSitOn = textDisplay;
@@ -127,11 +128,12 @@ public class MessageStack {
             return;
         }
 
-        var middleEntities = spawnMiddleEntities(config.isLowerModeEnabled() ? 1 : 2);
-        middleEntities.get(middleEntities.size() - 1).addPassenger(nextDisplayedMessage.entities.get(0));
-        nextDisplayedMessage.entities.addAll(0, middleEntities);
+        var nextEntity = nextDisplayedMessage.entities.get(0);
+        if (nextEntity.getType() == EntityType.INTERACTION) {
+            ((Interaction)nextEntity).setInteractionHeight(config.gapAboveHead());
+        }
 
-        player.addPassenger(middleEntities.get(0));
+        player.addPassenger(nextEntity);
     }
 
     private TextDisplay spawnTextDisplay(Location location, String text, double secondsToExist, boolean showTimer) {
@@ -201,32 +203,24 @@ public class MessageStack {
         return text;
     }
 
-    private List<Entity> spawnMiddleEntities(int count) {
-        var middleEntities = new ArrayList<Entity>();
+    private Entity spawnMiddleEntity(float height) {
         var location = player.getLocation();
-        location.setY(255); // Setting high Y coordinate to prevent the message appearing from bottom
+        location.setY(location.y() + 50); // Setting higher Y coordinate to prevent the message appearing from bottom
 
-        Entity previousEntity = null;
-        for (int i = 0; i < count; i++) {
-            var entity = Objects.requireNonNull(location.getWorld()).spawn(location, AreaEffectCloud.class);
-            entity.setParticle(Particle.BLOCK_CRACK, Material.AIR.createBlockData());
-            entity.setRadius(0);
-            entity.setInvulnerable(true);
-            entity.setGravity(false);
-            // Adding a scoreboard tag in order to distinguish from regular entity and be able to make the cleanup
-            entity.addScoreboardTag(customEntityTag);
-            middleEntities.add(entity);
-            if (previousEntity != null) previousEntity.addPassenger(entity);
-            previousEntity = entity;
-        }
+        var entity = Objects.requireNonNull(location.getWorld()).spawn(location, Interaction.class);
+        entity.setInteractionWidth(0);
+        entity.setInteractionHeight(height);
+        entity.setInvulnerable(true);
+        entity.setGravity(false);
+        // Adding a scoreboard tag in order to distinguish from regular entity and be able to make the cleanup
+        entity.addScoreboardTag(customEntityTag);
 
-        return middleEntities;
+        return entity;
     }
 
     private double calculateTimeForMessageToExist(String message) {
         double initialTime = config.timeToExist();
-        var scalingEnabled = config.isScalingEnabled();
-        if (scalingEnabled) {
+        if (config.isScalingEnabled()) {
             var scalingCoefficient = config.scalingCoefficient();
             initialTime += (scalingCoefficient * message.length());
         }
@@ -234,7 +228,7 @@ public class MessageStack {
         return initialTime;
     }
 
-    // Gets the latest entity in the stack that new entity can be sat on
+    // Gets the latest entity in the stack that a new entity can sit on
     private Entity getEntityToSitOn() {
         if (entities.isEmpty()) return player;
         else return entities.get(entities.size() - 1);
