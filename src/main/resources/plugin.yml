@@ -1,7 +1,7 @@
 name: MessagesOnHead
 version: '${project.version}'
 main: mrquackduck.messagesonhead.MessagesOnHeadPlugin
-api-version: '1.19'
+api-version: '1.21.6'
 
 commands:
   messagesonhead:
