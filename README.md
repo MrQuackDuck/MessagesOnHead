@@ -20,6 +20,7 @@ The plugin's functionality is based on the [Text Display](https://minecraft.wiki
 - **Time scaling**: you can make longer messages exist for more time.
 - **Colors and style**: you can choose the color of the text, its background, whether the text is shadowed and the color for the timer.
 - **Rotation**: you may configure how a text display will rotate in the `pivotAxis` field.
+- **Adjustable height (1.21.6+)**: you may configure gaps between messages and above player's head in `gapBetweenMessages` and `gapAboveHead` fields.
 - **PlaceholderAPI support**: you can configure a placeholder that will color your text displays.
 
 ### 🔞 Permissions
@@ -50,8 +51,9 @@ scalingEnabled: true
 # will exist for extra 5 seconds if the coefficient is set to 0.1 (because 0.1 * 50 = 5)
 scalingCoefficient: 0.05
 
-# Whether messages should be displayed on the same level as the nickname (for servers where nicknames are disabled)
-lowerMode: true
+# Distances between messages / above player's head
+gapBetweenMessages: 0.3
+gapAboveHead: 0.4
 
 textColor: "#FFFFFF"
 
