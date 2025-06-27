@@ -52,8 +52,12 @@ public class Configuration extends ConfigurationBase {
         return getInt("symbolsLimit");
     }
 
-    public boolean isLowerModeEnabled() {
-        return getBoolean("lowerMode");
+    public float gapBetweenMessages() {
+        return (float)getDouble("gapBetweenMessages");
+    }
+
+    public float gapAboveHead() {
+        return (float)getDouble("gapAboveHead");
     }
 
     public long timeToExist() {
