@@ -8,48 +8,28 @@ public class Configuration extends ConfigurationBase {
         super(plugin);
     }
 
-    public String textColor() {
-        return getString("textColor");
-    }
-
-    public String backgroundColor() {
-        return getString("backgroundColor");
-    }
-
-    public int backgroundTransparencyPercentage() {
-        return getInt("backgroundTransparencyPercentage");
-    }
-
-    public boolean isBackgroundEnabled() {
-        return getBoolean("backgroundEnabled");
-    }
-
-    public boolean isTimerEnabled() {
-        return getBoolean("timerEnabled");
-    }
-
-    public String timerColor() {
-        return getString("timerColor");
-    }
-
-    public boolean isShadowed() {
-        return getBoolean("isShadowed");
-    }
-
-    public String timerFormat() {
-        return getString("timerFormat");
-    }
-
-    public int minSymbolsForTimer() {
-        return getInt("minSymbolsForTimer");
-    }
-
     public int symbolsPerLine() {
         return getInt("symbolsPerLine");
     }
 
     public int symbolsLimit() {
         return getInt("symbolsLimit");
+    }
+
+    public long timeToExist() {
+        return getLong("timeToExist");
+    }
+
+    public boolean visibleToSender() {
+        return getBoolean("visibleToSender");
+    }
+
+    public boolean isScalingEnabled() {
+        return getBoolean("scalingEnabled");
+    }
+
+    public double scalingCoefficient() {
+        return getDouble("scalingCoefficient");
     }
 
     public float gapBetweenMessages() {
@@ -60,16 +40,44 @@ public class Configuration extends ConfigurationBase {
         return (float)getDouble("gapAboveHead");
     }
 
-    public long timeToExist() {
-        return getLong("timeToExist");
+    public String textColor() {
+        return getString("textColor");
     }
 
-    public boolean isScalingEnabled() {
-        return getBoolean("scalingEnabled");
+    public boolean isTimerEnabled() {
+        return getBoolean("timerEnabled");
     }
 
-    public double scalingCoefficient() {
-        return getDouble("scalingCoefficient");
+    public int minSymbolsForTimer() {
+        return getInt("minSymbolsForTimer");
+    }
+
+    public String timerFormat() {
+        return getString("timerFormat");
+    }
+
+    public String timerColor() {
+        return getString("timerColor");
+    }
+
+    public boolean isBackgroundEnabled() {
+        return getBoolean("backgroundEnabled");
+    }
+
+    public String backgroundColor() {
+        return getString("backgroundColor");
+    }
+
+    public int backgroundTransparencyPercentage() {
+        return getInt("backgroundTransparencyPercentage");
+    }
+
+    public boolean isShadowed() {
+        return getBoolean("isShadowed");
+    }
+
+    public Display.Billboard pivotAxis() {
+        return getEnumValue("pivotAxis", Display.Billboard.class, Display.Billboard.VERTICAL);
     }
 
     public boolean isPlaceholderApiIntegrationEnabled() {
@@ -82,9 +90,5 @@ public class Configuration extends ConfigurationBase {
 
     public String lineFormat() {
         return getString("lineFormat");
-    }
-
-    public Display.Billboard pivotAxis() {
-        return getEnumValue("pivotAxis", Display.Billboard.class, Display.Billboard.VERTICAL);
     }
 }
