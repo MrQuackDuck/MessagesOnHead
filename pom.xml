@@ -6,7 +6,7 @@
 
   <groupId>mrquackduck</groupId>
   <artifactId>MessagesOnHead</artifactId>
-  <version>1.3</version>
+  <version>1.4</version>
   <packaging>jar</packaging>
 
   <name>MessagesOnHeadPlugin</name>
