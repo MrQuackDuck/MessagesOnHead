@@ -3,7 +3,7 @@ symbolsPerLine: 30
 symbolsLimit: -1
 # Initial amount of seconds for the message to exist
 timeToExist: 2
-# Whether a message will be visible to the sender
+# Whether a message will be visible to its sender
 visibleToSender: true
 
 # Whether a longer message will exist for more time
