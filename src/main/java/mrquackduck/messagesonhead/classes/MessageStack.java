@@ -142,6 +142,7 @@ public class MessageStack {
 
         final var textDisplay = (TextDisplay) Objects.requireNonNull(location.getWorld()).spawnEntity(location, EntityType.TEXT_DISPLAY);
         if (config.isBackgroundEnabled()) textDisplay.setBackgroundColor(Color.fromARGB(ColorUtils.hexToARGB(config.backgroundColor(),config.backgroundTransparencyPercentage())));
+        if (!config.visibleToSender()) player.hideEntity(plugin, textDisplay);
         textDisplay.setDefaultBackground(!config.isBackgroundEnabled());
         textDisplay.setBillboard(config.pivotAxis());
         textDisplay.setRotation(location.getYaw(), 0);
@@ -208,11 +209,11 @@ public class MessageStack {
         location.setY(location.y() + 50); // Setting higher Y coordinate to prevent the message appearing from bottom
 
         var entity = Objects.requireNonNull(location.getWorld()).spawn(location, Interaction.class);
+        if (!config.visibleToSender()) player.hideEntity(plugin, entity);
         entity.setInteractionWidth(0);
         entity.setInteractionHeight(height);
         entity.setInvulnerable(true);
         entity.setGravity(false);
-        // Adding a scoreboard tag in order to distinguish from regular entity and be able to make the cleanup
         entity.addScoreboardTag(customEntityTag);
 
         return entity;
@@ -228,7 +229,9 @@ public class MessageStack {
         return initialTime;
     }
 
-    // Gets the latest entity in the stack that a new entity can sit on
+    /**
+     * Returns the highest entity that can have new messages stacked on top of it (either the player or the last message entity)
+     */
     private Entity getEntityToSitOn() {
         if (entities.isEmpty()) return player;
         else return entities.get(entities.size() - 1);

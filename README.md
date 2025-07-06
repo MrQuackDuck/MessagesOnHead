@@ -16,11 +16,12 @@ The plugin's functionality is based on the [Text Display](https://minecraft.wiki
 ### 🌠 Key features
 - **Limit per line**: you can configure the symbols limit for each line in the `symbolsPerLine` field.
 - **Max symbols limit**: you can configure the max amount of symbols per message in the `symbolsLimit` field (_'...' will be appended if the limit is reached_).
-- **Timer**: You can enable/disable the timer at the end of the message that shows how much time is left until the message is gone.
+- **Timer**: you can enable/disable the timer at the end of the message that shows how much time is left until the message is gone.
 - **Time scaling**: you can make longer messages exist for more time.
 - **Colors and style**: you can choose the color of the text, its background, whether the text is shadowed and the color for the timer.
 - **Rotation**: you may configure how a text display will rotate in the `pivotAxis` field.
-- **Adjustable height (1.21.6+)**: you may configure gaps between messages and above player's head in `gapBetweenMessages` and `gapAboveHead` fields.
+- **Visibility**: you may hide messages from their sender via the `visibleToSender` field as well as choose whose messages will be shown globally using the `messagesonhead.show` permission.
+- **Adjustable gaps**: you may configure gaps between messages and above player's head in `gapBetweenMessages` and `gapAboveHead` fields.
 - **PlaceholderAPI support**: you can configure a placeholder that will color your text displays.
 
 ### 🔞 Permissions
@@ -44,6 +45,8 @@ symbolsPerLine: 30
 symbolsLimit: -1
 # Initial amount of seconds for the message to exist
 timeToExist: 2
+# Whether a message will be visible to its sender
+visibleToSender: true
 
 # Whether a longer message will exist for more time
 scalingEnabled: true
