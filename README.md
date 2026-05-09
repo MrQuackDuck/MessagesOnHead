@@ -55,6 +55,8 @@ symbolsLimit: -1
 timeToExist: 2
 # Whether a message will be visible to its sender
 visibleToSender: true
+# Hide the message when the player is under an invisibility effect
+hideWhenInvisible: true
 
 # Whether a longer message will exist for more time
 scalingEnabled: true
