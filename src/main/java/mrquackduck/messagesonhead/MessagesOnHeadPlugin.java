@@ -30,7 +30,7 @@ public final class MessagesOnHeadPlugin extends JavaPlugin {
         this.messageStackRepository = new MessageStackRepository(this, toggleManager);
 
         // Register listeners
-        getServer().getPluginManager().registerEvents(new SendMessageListener(messageStackRepository), this);
+        getServer().getPluginManager().registerEvents(new SendMessageListener(this, messageStackRepository), this);
         getServer().getPluginManager().registerEvents(new PlayerConnectionListener(messageStackRepository, toggleManager), this);
 
         // Starting the plugin
