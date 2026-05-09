@@ -24,6 +24,10 @@ public class Configuration extends MessageConfigurationBase {
         return getBoolean("visibleToSender");
     }
 
+    public boolean hideWhenInvisible() {
+        return getBoolean("hideWhenInvisible");
+    }
+
     public boolean isScalingEnabled() {
         return getBoolean("scalingEnabled");
     }
